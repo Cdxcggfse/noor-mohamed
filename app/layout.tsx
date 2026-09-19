@@ -4,6 +4,7 @@ import './globals.css';
 
 const fraunces = Fraunces({
   subsets: ['latin'],
+  style: ['normal', 'italic'],
   variable: '--font-fraunces',
   display: 'swap',
 });
@@ -22,24 +23,36 @@ const ibmMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Nour Mohamed (Noor) — Graphic Designer | Cairo, Egypt',
+  // Set NEXT_PUBLIC_SITE_URL to the live domain before deploying so
+  // canonical + social image URLs resolve correctly.
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
+  title: 'Nour Mohamed (Noor) — Graphic Designer & Visual Direction',
   description:
-    'Portfolio of Nour Mohamed ("Noor"), a graphic designer based in Cairo, Egypt. Creative, detail-oriented design for branding, social media content, AI-generated visuals, and visual storytelling.',
+    'Portfolio of Nour Mohamed ("Noor"), a graphic designer working across brand identity, social media content, AI-generated visuals, and visual storytelling.',
   keywords: [
     'Nour Mohamed',
     'Noor',
-    'Graphic Designer Cairo',
-    'Branding Egypt',
+    'Graphic Designer',
+    'Brand Identity',
     'Social Media Design',
     'AI Visuals',
     'Fashion Pattern Making',
   ],
   authors: [{ name: 'Nour Mohamed' }],
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     title: 'Nour Mohamed (Noor) — Graphic Designer',
     description: 'A quiet light, finding form in the dark.',
+    siteName: 'Nour Mohamed',
     locale: 'en_US',
     type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Nour Mohamed (Noor) — Graphic Designer',
+    description: 'A quiet light, finding form in the dark.',
   },
 };
 
@@ -54,11 +67,6 @@ export default function RootLayout({
     name: 'Nour Mohamed',
     alternateName: 'Noor',
     jobTitle: 'Graphic Designer',
-    address: {
-      '@type': 'PostalAddress',
-      addressLocality: 'Cairo',
-      addressCountry: 'Egypt',
-    },
     sameAs: ['https://www.behance.net/nourmohamed193'],
     knowsAbout: [
       'Graphic Design',

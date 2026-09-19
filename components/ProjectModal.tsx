@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Sparkles, Tag, ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -23,9 +23,13 @@ interface ProjectModalProps {
 
 const SPRING = { type: 'spring' as const, stiffness: 240, damping: 28 };
 
+const FOCUSABLE =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 export default function ProjectModal({ project, onClose }: ProjectModalProps) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [imageError, setImageError] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   // ── Lock body scroll while modal is open ─────────────────────────────────
   useEffect(() => {
@@ -54,7 +58,31 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
     (e: KeyboardEvent) => {
       if (!project) return;
       const imgs = project.galleryImages?.length ? project.galleryImages : [project.imageSrc];
-      if (e.key === 'Escape')     { onClose(); }
+
+      if (e.key === 'Escape') { onClose(); return; }
+
+      // ── Keep Tab focus inside the dialog ─────────────────────────────────
+      if (e.key === 'Tab') {
+        const panel = panelRef.current;
+        if (!panel) return;
+        const nodes = Array.from(panel.querySelectorAll<HTMLElement>(FOCUSABLE));
+        if (!nodes.length) return;
+
+        const first = nodes[0];
+        const last = nodes[nodes.length - 1];
+        const activeEl = document.activeElement as HTMLElement | null;
+        const isOutside = !activeEl || !panel.contains(activeEl);
+
+        if (e.shiftKey && (isOutside || activeEl === first)) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && (isOutside || activeEl === last)) {
+          e.preventDefault();
+          first.focus();
+        }
+        return;
+      }
+
       if (e.key === 'ArrowLeft')  { setActiveImageIndex((p) => (p - 1 + imgs.length) % imgs.length); }
       if (e.key === 'ArrowRight') { setActiveImageIndex((p) => (p + 1)               % imgs.length); }
     },
@@ -65,6 +93,26 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown]);
+
+  // ── Move focus into the dialog on open, restore it on close ─────────────
+  useEffect(() => {
+    if (!project) return;
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+
+    const raf = window.requestAnimationFrame(() => {
+      const panel = panelRef.current;
+      if (!panel) return;
+      const target =
+        panel.querySelector<HTMLElement>('[data-autofocus]') ??
+        panel.querySelector<HTMLElement>(FOCUSABLE);
+      target?.focus();
+    });
+
+    return () => {
+      window.cancelAnimationFrame(raf);
+      previouslyFocused?.focus?.();
+    };
+  }, [project]);
 
   if (!project) return null;
 
@@ -92,6 +140,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
 
         {/* ── Modal Panel ─────────────────────────────────────────────────── */}
         <motion.div
+          ref={panelRef}
           role="dialog"
           aria-modal="true"
           aria-labelledby="modal-project-title"
@@ -116,6 +165,7 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
           {/* ── Close Button ────────────────────────────────────────────── */}
           <button
             onClick={onClose}
+            data-autofocus
             className="absolute top-4 right-4 z-30 p-2.5 rounded-full bg-ink/80 border border-gold/30 text-parchment hover:text-gold hover:border-gold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gold"
             aria-label="Close modal"
           >

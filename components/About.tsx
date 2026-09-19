@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import GlowBackground from './GlowBackground';
+import ScrollLitText from './ScrollLitText';
 
 export default function About() {
   const prefersReducedMotion = useReducedMotion();
@@ -39,14 +40,14 @@ export default function About() {
         {/* Section Header */}
         <div className="flex items-center gap-4">
           <span className="w-8 h-[2px] bg-gold rounded-full" aria-hidden="true" />
-          <span className="font-mono text-xs sm:text-sm uppercase tracking-widest text-gold font-medium">
-            01 / THE PERSON
-          </span>
+          <h2 id="about-heading" className="font-mono text-xs sm:text-sm uppercase tracking-widest text-gold font-medium">
+            02 / THE PERSON
+          </h2>
         </div>
 
         {/* Verbatim Quote with Large Background Serif Quotation Mark */}
         <motion.div
-          initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 30 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-100px' }}
           transition={{ duration: prefersReducedMotion ? 0.01 : 0.8 }}
@@ -61,9 +62,10 @@ export default function About() {
           </span>
 
           <blockquote className="relative z-10 max-w-4xl">
-            <p className="font-display text-2xl sm:text-4xl lg:text-5xl text-parchment leading-tight font-normal">
-              &ldquo;Creative, thoughtful, and detail-oriented. I love meaningful ideas, beautiful visuals, and designs that have purpose.&rdquo;
-            </p>
+            <ScrollLitText
+              text="“Creative, thoughtful, and detail-oriented. I love meaningful ideas, beautiful visuals, and designs that have purpose.”"
+              className="font-display text-2xl sm:text-4xl lg:text-5xl text-parchment leading-tight font-normal"
+            />
             <cite className="mt-6 block font-mono text-xs sm:text-sm text-gold uppercase tracking-widest not-italic">
               — Nour Mohamed
             </cite>
@@ -79,14 +81,15 @@ export default function About() {
             {infpTraits.map((trait, index) => (
               <motion.div
                 key={trait.title}
-                initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 25 }}
+                initial={{ opacity: 0, y: 25 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                whileHover={prefersReducedMotion ? undefined : { y: -4, transition: { duration: 0.3, delay: 0 } }}
                 viewport={{ once: true, margin: '-50px' }}
                 transition={{
                   duration: prefersReducedMotion ? 0.01 : 0.6,
                   delay: prefersReducedMotion ? 0 : index * 0.1,
                 }}
-                className="glass-panel glass-panel-hover rounded-xl p-6 sm:p-7 flex flex-col justify-between"
+                className="glass-panel glass-panel-hover spotlight rounded-xl p-6 sm:p-7 flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between mb-3">
@@ -108,14 +111,14 @@ export default function About() {
 
         {/* Diploma & Film Studio Structural Foundation Highlight */}
         <motion.div
-          initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 20 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: prefersReducedMotion ? 0.01 : 0.7 }}
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
           {/* Fashion Pattern Making */}
-          <div className="glass-panel rounded-xl p-6 sm:p-8 border border-gold/15 flex flex-col justify-between space-y-4">
+          <div className="glass-panel glass-panel-hover spotlight rounded-xl p-6 sm:p-8 border border-gold/15 flex flex-col justify-between space-y-4">
             <div className="space-y-2">
               <span className="font-mono text-xs uppercase tracking-widest text-gold font-medium">
                 STRUCTURAL FOUNDATION
@@ -124,7 +127,7 @@ export default function About() {
                 Diploma in Fashion Design & Pattern Making
               </h4>
               <p className="font-sans text-smoke text-sm">
-                Technical Industrial Institute, Cairo · 2021–2023
+                Technical Industrial Institute · 2021–2023
               </p>
             </div>
             <p className="font-sans text-sm text-smoke/90 italic border-l-2 border-gold/30 pl-4">
@@ -133,7 +136,7 @@ export default function About() {
           </div>
 
           {/* Film & AI Video Production */}
-          <div className="glass-panel rounded-xl p-6 sm:p-8 border border-gold/15 flex flex-col justify-between space-y-4">
+          <div className="glass-panel glass-panel-hover spotlight rounded-xl p-6 sm:p-8 border border-gold/15 flex flex-col justify-between space-y-4">
             <div className="space-y-2">
               <span className="font-mono text-xs uppercase tracking-widest text-gold font-medium">
                 FILM & DIGITAL PRODUCTION
@@ -142,7 +145,7 @@ export default function About() {
                 Pictures Studios Film Experience
               </h4>
               <p className="font-sans text-smoke text-sm">
-                Cairo, Egypt · Sept 2025 – Apr 2026
+                Sept 2025 – Apr 2026
               </p>
             </div>
             <p className="font-sans text-sm text-smoke/90 italic border-l-2 border-gold/30 pl-4">
@@ -153,13 +156,13 @@ export default function About() {
 
         {/* Languages & Core Traits Bar */}
         <motion.div
-          initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 20 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: prefersReducedMotion ? 0.01 : 0.7 }}
-          className="glass-panel rounded-xl p-6 border border-gold/10 flex flex-wrap items-center justify-between gap-4"
+          className="glass-panel spotlight rounded-xl p-6 border border-gold/10 flex flex-wrap items-center justify-between gap-4"
         >
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <span className="font-mono text-xs uppercase tracking-widest text-gold font-medium">
               Languages:
             </span>
@@ -171,12 +174,12 @@ export default function About() {
             </span>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <span className="font-mono text-xs uppercase tracking-widest text-smoke">
-              Location:
+              Working:
             </span>
             <span className="font-mono text-xs text-gold">
-              Gesr El-Suez, Cairo, Egypt
+              Remote & on-site collaborations
             </span>
           </div>
         </motion.div>

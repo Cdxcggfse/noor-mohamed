@@ -11,7 +11,6 @@ export default function Experience() {
   const timelineEvents = [
     {
       company: 'Pictures Studios Film',
-      location: 'Cairo, Egypt',
       period: 'Sept 2025 – Apr 2026',
       role: 'Graphic Designer',
       highlights: [
@@ -24,7 +23,6 @@ export default function Experience() {
     },
     {
       company: 'Freelance Graphic Designer',
-      location: 'Cairo, Egypt',
       period: 'Mar 2025 – Present',
       role: 'Graphic Designer & Creative Direction',
       highlights: [
@@ -39,7 +37,6 @@ export default function Experience() {
     {
       institution: 'Technical Industrial Institute',
       degree: 'Diploma in Fashion Design Specialization: Pattern Making',
-      location: 'Cairo, Egypt',
       period: 'Sept 2021 – Jul 2023',
       details: [
         'Specialized in pattern making, garment construction, and modifying garment patterns.',
@@ -83,7 +80,7 @@ export default function Experience() {
             id="experience-heading"
             className="font-mono text-xs sm:text-sm uppercase tracking-widest text-gold font-medium"
           >
-            04 / EXPERIENCE & CREDENTIALS
+            05 / EXPERIENCE & CREDENTIALS
           </h2>
         </div>
 
@@ -103,8 +100,9 @@ export default function Experience() {
             {timelineEvents.map((item, index) => (
               <motion.div
                 key={item.company}
-                initial={{ opacity: 0, x: prefersReducedMotion ? 0 : -25 }}
+                initial={{ opacity: 0, x: -25 }}
                 whileInView={{ opacity: 1, x: 0 }}
+                whileHover={prefersReducedMotion ? undefined : { y: -4 }}
                 viewport={{ once: true, margin: '-50px' }}
                 transition={{
                   duration: prefersReducedMotion ? 0.01 : 0.7,
@@ -118,14 +116,14 @@ export default function Experience() {
                 </div>
 
                 {/* Timeline Card */}
-                <div className="glass-panel glass-panel-hover rounded-2xl p-6 sm:p-8 space-y-4">
+                <div className="glass-panel glass-panel-hover spotlight rounded-2xl p-6 sm:p-8 space-y-4">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gold/10 pb-4">
                     <div>
                       <h4 className="font-display text-xl sm:text-2xl text-parchment font-medium group-hover:text-gold transition-colors">
                         {item.company}
                       </h4>
                       <p className="font-mono text-xs text-gold uppercase tracking-wider mt-1">
-                        {item.role} · {item.location}
+                        {item.role}
                       </p>
                     </div>
                     <span className="font-mono text-xs text-smoke/70 bg-plum px-3 py-1 rounded-full border border-gold/10 self-start sm:self-center shrink-0">
@@ -161,11 +159,12 @@ export default function Experience() {
             {education.map((edu) => (
               <motion.div
                 key={edu.institution}
-                initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 20 }}
+                  initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                whileHover={prefersReducedMotion ? undefined : { y: -4 }}
                 viewport={{ once: true }}
                 transition={{ duration: prefersReducedMotion ? 0.01 : 0.6 }}
-                className="glass-panel glass-panel-hover rounded-2xl p-6 space-y-3"
+                className="glass-panel glass-panel-hover spotlight rounded-2xl p-6 space-y-3"
               >
                 <div className="flex justify-between items-start gap-2 border-b border-gold/10 pb-3">
                   <div>
@@ -173,7 +172,7 @@ export default function Experience() {
                       {edu.degree}
                     </h4>
                     <p className="font-mono text-xs text-gold uppercase tracking-wider mt-0.5">
-                      {edu.institution} · {edu.location}
+                      {edu.institution}
                     </p>
                   </div>
                   <span className="font-mono text-[11px] text-smoke/70 bg-plum px-2.5 py-0.5 rounded-full border border-gold/10 shrink-0">
@@ -205,11 +204,12 @@ export default function Experience() {
               {courses.map((course, cIdx) => (
                 <motion.div
                   key={course.name}
-                  initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 20 }}
+                initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
+                  whileHover={prefersReducedMotion ? undefined : { y: -3 }}
                   viewport={{ once: true }}
                   transition={{ duration: prefersReducedMotion ? 0.01 : 0.6, delay: cIdx * 0.1 }}
-                  className="glass-panel glass-panel-hover rounded-xl p-4 flex items-center justify-between gap-4"
+                  className="glass-panel glass-panel-hover spotlight rounded-xl p-4 flex items-center justify-between gap-4"
                 >
                   <div className="space-y-1">
                     <h4 className="font-display text-base text-parchment font-medium">

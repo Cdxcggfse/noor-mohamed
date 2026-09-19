@@ -62,7 +62,7 @@ export default function Expertise() {
             id="expertise-heading"
             className="font-mono text-xs sm:text-sm uppercase tracking-widest text-gold font-medium"
           >
-            02 / WHAT SHE MAKES
+            03 / WHAT SHE MAKES
           </h2>
         </div>
 
@@ -71,23 +71,24 @@ export default function Expertise() {
           {services.map((service, index) => (
             <motion.div
               key={service.id}
-              initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 30 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
+              whileHover={prefersReducedMotion ? undefined : { y: -5 }}
               viewport={{ once: true, margin: '-50px' }}
               transition={{
                 duration: prefersReducedMotion ? 0.01 : 0.7,
                 delay: prefersReducedMotion ? 0 : index * 0.1,
               }}
-              className={`glass-panel glass-panel-hover rounded-2xl p-8 sm:p-10 flex flex-col justify-between group ${service.gridClass}`}
+              className={`glass-panel glass-panel-hover spotlight rounded-2xl p-8 sm:p-10 flex flex-col justify-between group ${service.gridClass}`}
             >
               <div>
                 <div className="flex items-center justify-between mb-6">
                   <span className="font-mono text-xs text-gold uppercase tracking-widest font-semibold">
                     {service.subtitle}
                   </span>
-                  <span className="font-mono text-xs text-smoke/50">{service.id}</span>
+                  <span className="font-mono text-xs text-smoke/50 transition-colors duration-500 group-hover:text-gold/70">{service.id}</span>
                 </div>
-                <h3 className="font-display text-2xl sm:text-3xl text-parchment font-medium mb-4 group-hover:text-gold transition-colors duration-300 leading-snug">
+                <h3 className="font-display text-2xl sm:text-3xl text-parchment font-medium mb-4 group-hover:text-gold transition-colors duration-500 leading-snug">
                   {service.title}
                 </h3>
               </div>

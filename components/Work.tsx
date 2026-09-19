@@ -2,151 +2,34 @@
 
 import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { motion, useReducedMotion } from 'framer-motion';
-import { ExternalLink, ArrowUpRight, Eye, Layers, Grid } from 'lucide-react';
+import { ArrowUpRight, Layers, Grid } from 'lucide-react';
 import GlowBackground from './GlowBackground';
-import ProjectModal, { Project } from './ProjectModal';
 import ArcCarousel from './ArcCarousel';
-
-// ── Stable project data (defined outside component to prevent re-creation) ──
-const ALL_PROJECTS: Project[] = [
-  {
-    id: 1,
-    title: '"Naturlea" Social Media Posts',
-    tag: 'Social',
-    url: 'https://www.behance.net/gallery/233287217/Naturlea-Social-media-posts',
-    description: 'Organic botanical brand aesthetic with soft natural light, minimalist grid compositions, and earthy tones.',
-    imageSrc: '/projects/Naturlea_Social_media_posts_thumbnail.jpg',
-    galleryImages: [
-      '/projects/Naturlea_Social_media_posts_thumbnail.jpg',
-      '/projects/Naturlea_Social_media_posts/image_1.jpg',
-      '/projects/Naturlea_Social_media_posts/image_2.jpg',
-    ],
-    featured: true,
-  },
-  {
-    id: 2,
-    title: '"BEORA" Brand Identity',
-    tag: 'Branding',
-    url: 'https://www.behance.net/gallery/233288455/BEORA-Brand-identity',
-    description: 'Modern luxury visual identity featuring refined typography, minimal geometry, and quiet elegance.',
-    imageSrc: '/projects/BEORA_Brand_identity_thumbnail.jpg',
-    galleryImages: [
-      '/projects/BEORA_Brand_identity_thumbnail.jpg',
-      '/projects/BEORA_Brand_identity/image_1.jpg',
-      '/projects/BEORA_Brand_identity/image_2.jpg',
-    ],
-    featured: false,
-  },
-  {
-    id: 3,
-    title: 'Pictures Studios Film — TV Commercial & AI Visuals',
-    tag: 'AI & Film',
-    url: 'https://www.behance.net/nourmohamed193',
-    description: 'AI-generated visual development, company profile design, and video concepts aligned with TV commercial storyboards.',
-    imageSrc: '/projects/Synthetic_deams_thumbnail.png',
-    galleryImages: [
-      '/projects/Synthetic_deams_thumbnail.png',
-      '/projects/Synthetic_deams/image_1.png',
-      '/projects/Synthetic_deams/image_2.png',
-    ],
-    featured: true,
-  },
-  {
-    id: 4,
-    title: 'Birthday Magazine',
-    tag: 'Editorial',
-    url: 'https://www.behance.net/gallery/233288821/Birthday-Magazine',
-    description: 'Custom editorial publication design blending personal storytelling, expressive layout, and editorial typography.',
-    imageSrc: '/projects/Birthday_Magazine_thumbnail.jpg',
-    galleryImages: [
-      '/projects/Birthday_Magazine_thumbnail.jpg',
-      '/projects/Birthday_Magazine/image_1.jpg',
-      '/projects/Birthday_Magazine/image_2.jpg',
-    ],
-    featured: false,
-  },
-  {
-    id: 5,
-    title: 'Graphic T-Shirt Collection — Streetwear Concept',
-    tag: 'Apparel',
-    url: 'https://www.behance.net/gallery/251604699/Graphic-T-Shirt-Collection-Streetwear-Concept',
-    description: 'High-contrast graphic apparel prints rooted in urban typography and tactile printmaking techniques.',
-    imageSrc: '/projects/Graphic_T-Shirt_Collection_thumbnail.jpg',
-    galleryImages: [
-      '/projects/Graphic_T-Shirt_Collection_thumbnail.jpg',
-      '/projects/Graphic_T-Shirt_Collection__Streetwear_Concept/image_1.jpg',
-      '/projects/Graphic_T-Shirt_Collection__Streetwear_Concept/image_2.jpg',
-    ],
-    featured: false,
-  },
-  {
-    id: 6,
-    title: 'Synthetic Dreams',
-    tag: 'AI & Film',
-    url: 'https://www.behance.net/gallery/247782549/Synthetic-deams',
-    description: 'Surreal AI-driven visual exploration exploring light, dark atmospheres, and futuristic human forms.',
-    imageSrc: '/projects/Synthetic_deams_thumbnail.png',
-    galleryImages: [
-      '/projects/Synthetic_deams_thumbnail.png',
-      '/projects/Synthetic_deams/image_1.png',
-      '/projects/Synthetic_deams/image_2.png',
-    ],
-    featured: false,
-  },
-  {
-    id: 7,
-    title: 'Fashion Pattern & Silhouette Study',
-    tag: 'Apparel',
-    url: 'https://www.behance.net/nourmohamed193',
-    description: 'Garment pattern drafting, technical illustration, and geometric silhouette structures from diploma practice.',
-    imageSrc: '/projects/Graphic_T-Shirt_Collection_thumbnail.jpg',
-    galleryImages: [
-      '/projects/Graphic_T-Shirt_Collection_thumbnail.jpg',
-      '/projects/Graphic_T-Shirt_Collection__Streetwear_Concept/image_1.jpg',
-    ],
-    featured: false,
-  },
-  {
-    id: 8,
-    title: 'Notion Templates & Digital Dashboards',
-    tag: 'Branding',
-    url: 'https://www.behance.net/gallery/233288187/Notion-templets',
-    description: 'Clean digital organization dashboards designed with aesthetic clarity and functional minimalism.',
-    imageSrc: '/projects/Notion_templets_thumbnail.jpg',
-    galleryImages: [
-      '/projects/Notion_templets_thumbnail.jpg',
-      '/projects/Notion_templets/image_1.jpg',
-      '/projects/Notion_templets/image_2.jpg',
-    ],
-    featured: false,
-  },
-];
+import { PROJECTS, PROJECT_CATEGORIES } from '@/data/projects';
 
 export default function Work() {
   const prefersReducedMotion = useReducedMotion();
+  const router = useRouter();
   const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [viewMode, setViewMode] = useState<'3d' | 'grid'>('3d');
 
-  // ── Stable filtered list — only recomputes when category changes ────────
   const filteredProjects = useMemo(
     () =>
       selectedCategory === 'All'
-        ? ALL_PROJECTS
-        : ALL_PROJECTS.filter(
+        ? PROJECTS
+        : PROJECTS.filter(
             (p) => p.tag.toLowerCase() === selectedCategory.toLowerCase(),
           ),
     [selectedCategory],
   );
 
-  const categories = ['All', 'Branding', 'Social', 'AI & Film', 'Editorial', 'Apparel'];
-
   const handleImageError = (id: number) => {
     setImageErrors((prev) => ({ ...prev, [id]: true }));
   };
-
 
   return (
     <section
@@ -167,7 +50,7 @@ export default function Work() {
                 id="work-heading"
                 className="font-mono text-xs sm:text-sm uppercase tracking-widest text-gold font-medium"
               >
-                03 / SELECTED WORK & CASE STUDIES
+                01 / SELECTED WORK & CASE STUDIES
               </h2>
             </div>
             <p className="font-display text-3xl sm:text-4xl lg:text-5xl text-parchment font-normal">
@@ -176,12 +59,14 @@ export default function Work() {
           </div>
 
           {/* View Mode Toggle Switch (3D Arc vs Grid) */}
-          <div className="flex items-center gap-2 self-start md:self-end bg-plum/60 p-1.5 rounded-full border border-gold/20 backdrop-blur-md">
+          <div className="flex items-center gap-1.5 self-start md:self-end bg-plum/60 p-1.5 rounded-full border border-gold/20 backdrop-blur-md shadow-[inset_0_1px_0_rgba(243,236,223,0.05)]">
             <button
+              type="button"
               onClick={() => setViewMode('3d')}
-              className={`flex items-center gap-2 px-4 py-1.5 rounded-full font-mono text-xs uppercase tracking-wider transition-all duration-300 ${
+              aria-pressed={viewMode === '3d'}
+              className={`flex items-center gap-2 px-4 py-1.5 rounded-full font-mono text-xs uppercase tracking-wider transition-all duration-500 ease-luxe ${
                 viewMode === '3d'
-                  ? 'bg-gold text-ink font-semibold shadow-md'
+                  ? 'bg-gold-sheen text-ink font-semibold shadow-[0_0_18px_-2px_rgba(212,167,44,0.55)]'
                   : 'text-smoke hover:text-parchment'
               }`}
             >
@@ -189,10 +74,12 @@ export default function Work() {
               3D Arc View
             </button>
             <button
+              type="button"
               onClick={() => setViewMode('grid')}
-              className={`flex items-center gap-2 px-4 py-1.5 rounded-full font-mono text-xs uppercase tracking-wider transition-all duration-300 ${
+              aria-pressed={viewMode === 'grid'}
+              className={`flex items-center gap-2 px-4 py-1.5 rounded-full font-mono text-xs uppercase tracking-wider transition-all duration-500 ease-luxe ${
                 viewMode === 'grid'
-                  ? 'bg-gold text-ink font-semibold shadow-md'
+                  ? 'bg-gold-sheen text-ink font-semibold shadow-[0_0_18px_-2px_rgba(212,167,44,0.55)]'
                   : 'text-smoke hover:text-parchment'
               }`}
             >
@@ -204,14 +91,16 @@ export default function Work() {
 
         {/* Category Filter Pills */}
         <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-          {categories.map((cat) => (
+          {PROJECT_CATEGORIES.map((cat) => (
             <button
+              type="button"
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-1.5 rounded-full font-mono text-xs uppercase tracking-widest transition-all duration-300 shrink-0 ${
+              aria-pressed={selectedCategory === cat}
+              className={`px-4 py-1.5 rounded-full font-mono text-xs uppercase tracking-widest transition-all duration-500 ease-luxe shrink-0 ${
                 selectedCategory === cat
-                  ? 'bg-plum text-gold border border-gold/40 shadow-[0_0_15px_rgba(212,167,44,0.2)]'
-                  : 'bg-ink/60 text-smoke border border-glass-border hover:border-gold/20 hover:text-parchment'
+                  ? 'bg-plum text-gold border border-gold/50 shadow-[0_0_18px_rgba(212,167,44,0.28),inset_0_1px_0_rgba(243,236,223,0.06)]'
+                  : 'bg-ink/60 text-smoke border border-glass-border hover:border-gold/30 hover:text-parchment hover:bg-plum/40'
               }`}
             >
               {cat}
@@ -223,8 +112,9 @@ export default function Work() {
         {viewMode === '3d' ? (
           /* 3D Half-Circular Arc Widget Showcase */
           <ArcCarousel
+            key={selectedCategory}
             projects={filteredProjects}
-            onSelectProject={(project) => setSelectedProject(project)}
+            onSelectProject={(project) => router.push(`/work/${project.slug}`)}
           />
         ) : (
           /* Asymmetric Grid Layout */
@@ -236,18 +126,31 @@ export default function Work() {
               return (
                 <motion.div
                   key={project.id}
-                  initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 35 }}
+                  initial={{ opacity: 0, y: 35 }}
                   whileInView={{ opacity: 1, y: 0 }}
+                  whileHover={prefersReducedMotion ? undefined : { y: -6, transition: { duration: 0.3, delay: 0 } }}
                   viewport={{ once: true, margin: '-60px' }}
                   transition={{
                     duration: prefersReducedMotion ? 0.01 : 0.8,
                     delay: prefersReducedMotion ? 0 : (index % 2) * 0.15,
+                    ease: [0.16, 1, 0.3, 1],
                   }}
-                  onClick={() => setSelectedProject(project)}
-                  className={`group relative glass-panel rounded-2xl overflow-hidden flex flex-col justify-between border border-glass-border hover:border-gold/40 transition-all duration-500 hover:shadow-[0_0_40px_rgba(212,167,44,0.18)] cursor-pointer ${
+                  className={`group spotlight relative glass-panel rounded-2xl overflow-hidden flex flex-col justify-between border border-glass-border shadow-card hover:border-gold/45 transition-[border-color,box-shadow] duration-500 ease-luxe hover:shadow-card-hover ${
                     isFeatured ? 'md:col-span-2 min-h-[460px] lg:min-h-[540px]' : 'min-h-[400px] lg:min-h-[460px]'
                   }`}
                 >
+                  {/* Light-catch hairline along the top edge */}
+                  <div className="pointer-events-none absolute top-0 left-0 right-0 h-px bg-gold-line opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-40" />
+                  {/* Stretched link — makes the whole card one accessible target */}
+                  <Link
+                    href={`/work/${project.slug}`}
+                    className="absolute inset-0 z-30"
+                  >
+                    <span className="sr-only">
+                      View case study: {project.title}
+                    </span>
+                  </Link>
+
                   {/* Visual Container */}
                   <div className="relative w-full h-[260px] sm:h-[320px] lg:h-[380px] bg-plum/60 overflow-hidden">
                     {!hasError ? (
@@ -255,8 +158,8 @@ export default function Work() {
                         src={project.imageSrc}
                         alt={`${project.title} — ${project.description}`}
                         fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 1000px"
-                        className="object-cover object-center filter grayscale contrast-[0.92] brightness-[0.88] group-hover:grayscale-0 group-hover:contrast-100 group-hover:brightness-100 transition-all duration-700 ease-out group-hover:scale-[1.03]"
+                        sizes={isFeatured ? '(max-width: 768px) 100vw, 1152px' : '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 560px'}
+                        className="object-cover object-top transition-transform duration-[900ms] ease-luxe group-hover:scale-[1.06]"
                         onError={() => handleImageError(project.id)}
                       />
                     ) : (
@@ -279,8 +182,8 @@ export default function Work() {
                       </div>
                     )}
 
-                    {/* Dark Vignette Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent opacity-80 group-hover:opacity-40 transition-opacity duration-500" />
+                    {/* Soft Vignette Overlay — keeps the artwork the focus */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent opacity-60 group-hover:opacity-25 transition-opacity duration-500 pointer-events-none" />
 
                     {/* Tag Pill */}
                     <div className="absolute top-4 left-4 z-20">
@@ -289,33 +192,23 @@ export default function Work() {
                       </span>
                     </div>
 
-                    {/* Quick View & External Link Buttons */}
-                    <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
+                    {/* Case Study Hint */}
+                    <div className="absolute top-4 right-4 z-20">
                       <span className="hidden sm:inline-flex items-center gap-1 px-3 py-1 rounded-full bg-ink/80 backdrop-blur-md border border-gold/20 font-mono text-[10px] uppercase tracking-widest text-parchment opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <Eye className="w-3 h-3 text-gold" />
-                        Quick View
+                        View Case Study
+                        <ArrowUpRight className="w-3 h-3 text-gold" />
                       </span>
-                      <a
-                        href={project.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className="w-10 h-10 rounded-full bg-ink/80 backdrop-blur-md border border-gold/20 flex items-center justify-center text-smoke hover:text-gold hover:border-gold transition-all duration-300 transform hover:scale-110"
-                        title="Open on Behance"
-                      >
-                        <ExternalLink className="w-4 h-4" />
-                      </a>
                     </div>
                   </div>
 
                   {/* Card Info Details */}
-                  <div className="p-6 sm:p-8 flex flex-col justify-between flex-grow bg-plum/30">
+                  <div className="p-6 sm:p-8 flex flex-col justify-between flex-grow bg-gradient-to-b from-plum/25 to-plum/50">
                     <div className="flex items-baseline justify-between gap-4">
-                      <h3 className="font-display text-xl sm:text-2xl text-parchment font-medium group-hover:text-gold transition-colors duration-300">
+                      <h3 className="font-display text-xl sm:text-2xl text-parchment font-medium group-hover:text-gold transition-colors duration-500">
                         {project.title}
                       </h3>
-                      <span className="font-mono text-xs text-gold/70 shrink-0 uppercase tracking-wider group-hover:translate-x-1 transition-transform duration-300">
-                        Preview →
+                      <span className="font-mono text-xs text-gold/70 shrink-0 uppercase tracking-wider group-hover:text-gold group-hover:translate-x-1 transition-all duration-500 ease-luxe">
+                        Case Study →
                       </span>
                     </div>
                     <p className="font-sans text-smoke text-xs sm:text-sm leading-relaxed mt-2">
@@ -328,12 +221,6 @@ export default function Work() {
           </div>
         )}
       </div>
-
-      {/* Project Lightbox Modal */}
-      <ProjectModal
-        project={selectedProject}
-        onClose={() => setSelectedProject(null)}
-      />
     </section>
   );
 }
