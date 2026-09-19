@@ -207,6 +207,15 @@ export default function ArcCarousel({ projects, onSelectProject }: ArcCarouselPr
       return;
     }
 
+    // A press anywhere else on the stage (notably the data-no-drag action
+    // buttons, which never start a drag gesture) also holds the scene still.
+    // Otherwise the card can swing out from under a small target like the
+    // "Case Study" pill between pointerdown and click, and the click is lost.
+    if (e.buttons !== 0) {
+      applySpecular(e);
+      return;
+    }
+
     if (prefersReducedMotion || !canTilt.current) {
       applySpecular(e);
       return;
@@ -252,8 +261,12 @@ export default function ArcCarousel({ projects, onSelectProject }: ArcCarouselPr
       if (typeof index !== 'number') {
         // The press may have landed a frame before a card arrived under the
         // cursor; fall back to whatever is genuinely under the release point.
+        // Resolve through the card root (not just the overlay button): in some
+        // browsers the card artwork wins input hit-testing over the chrome
+        // above it, so a press on the "Case Study" pill can report the artwork
+        // as its target even though the pill paints on top.
         const releaseTarget = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement | null;
-        const surface = releaseTarget?.closest?.('[data-project-open]') as HTMLElement | null;
+        const surface = releaseTarget?.closest?.('[data-index]') as HTMLElement | null;
         const parsed = surface ? Number(surface.dataset.index) : NaN;
         if (Number.isInteger(parsed)) index = parsed;
       }
@@ -415,6 +428,7 @@ export default function ArcCarousel({ projects, onSelectProject }: ArcCarouselPr
               <motion.div
                 key={project.id}
                 ref={isCurrent ? activeCardRef : undefined}
+                data-index={index}
                 initial={{ x: tx, y: ty, rotateY: ry, scale, opacity: 0, z: tz }}
                 animate={{ x: tx, y: ty, rotateY: ry, scale, opacity, z: tz }}
                 transition={prefersReducedMotion ? { duration: 0 } : SPRING}
